@@ -10,3 +10,6 @@ venv
 # excel files
 *.xls
 *.xlsx
+
+# vscode
+.vscode
