@@ -29,3 +29,12 @@ charset=utf8
 
 <br/>
 
+### ⚙ excel file 정보 세팅
+
+create `srcFile.properties` file on root directory and set file properties 
+
+ex)
+```properties
+src_file=./example_document.xlsx
+src_sheet_name=IF_AB_0000
+```

@@ -7,7 +7,7 @@ def fetchColumnInfo(target_cols):
     # make db connection
     config = Properties()
     with open('db.properties', 'rb') as dbConfig:
-        config.load(dbConfig)
+        config.load(dbConfig, "utf-8")
 
     target_db = pymysql.connect(
         user=config.get('user').data, 
@@ -20,12 +20,15 @@ def fetchColumnInfo(target_cols):
     cursor = target_db.cursor(pymysql.cursors.DictCursor)
 
     fetching_query = """
-                    SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_COMMENT
+                    SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_COMMENT, 
+                            IF(IS_NULLABLE = 'NO', 'Y', '') AS IS_NOT_NULLABLE, 
+                            IF(COLUMN_KEY = 'PRI', 'Y', '') AS IS_PRIMARY_KEY
                     FROM INFORMATION_SCHEMA.COLUMNS
                     WHERE 
                         TABLE_NAME = %s
                         AND COLUMN_NAME = %s;
                 """
+
     
     column_info_dict = defaultdict(dict)
     
