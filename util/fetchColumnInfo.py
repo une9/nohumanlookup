@@ -20,7 +20,7 @@ def fetchColumnInfo(target_cols):
     cursor = target_db.cursor(pymysql.cursors.DictCursor)
 
     fetching_query = """
-                    SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_COMMENT, 
+                    SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_COMMENT, NUMERIC_PRECISION,
                             IF(IS_NULLABLE = 'NO', 'Y', '') AS IS_NOT_NULLABLE, 
                             IF(COLUMN_KEY = 'PRI', 'Y', '') AS IS_PRIMARY_KEY
                     FROM INFORMATION_SCHEMA.COLUMNS
@@ -28,7 +28,6 @@ def fetchColumnInfo(target_cols):
                         TABLE_NAME = %s
                         AND COLUMN_NAME = %s;
                 """
-
     
     column_info_dict = defaultdict(dict)
     
@@ -37,8 +36,9 @@ def fetchColumnInfo(target_cols):
             # print(table, " ", column)
             cursor.execute(fetching_query, (table, column))
             fetch_result = cursor.fetchall()
-            data = fetch_result[0]
-            # print(table, " ", column, " ", fetch_result)
-            column_info_dict[table][data['COLUMN_NAME']] = data
+            if len(fetch_result) > 0:
+                data = fetch_result[0]
+                # print(table, " ", column, " ", fetch_result)
+                column_info_dict[table][data['COLUMN_NAME']] = data
 
     return column_info_dict

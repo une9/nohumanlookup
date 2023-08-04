@@ -90,13 +90,15 @@ def doLookup(sheet, column_info_dict, end_row):
         "K" : "COLUMN_COMMENT",
         "M" : "DATA_TYPE",
         "N" : "CHARACTER_MAXIMUM_LENGTH",
+        "N2" : "NUMERIC_PRECISION",      # decimal type인 경우 CHARACTER_MAXIMUM_LENGTH 대신 사용
         "O" : "IS_NOT_NULLABLE",    # 필수여부
         "P" : "IS_PRIMARY_KEY",    # PK
     }
     # TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_COMMENT, IS_NOT_NULLABLE, IS_PRIMARY_KEY
 
     table_row_color = (128, 128, 128)   # grey
-    alert_color = (255, 0, 0)        #red
+    alert_color = (255, 0, 0)        # red
+    warning_color = (255, 255, 0)    # yellow  
 
     table = None
     for row in range(5, end_row + 1):
@@ -109,7 +111,7 @@ def doLookup(sheet, column_info_dict, end_row):
 
         # table_names = list(map(lambda x: x.upper(), column_info_dict.keys()))
         table_names = list(column_info_dict.keys())
-        print(f"table names: {table_names}")
+        # print(f"table names: {table_names}")
         
         src_key = src_key_cell.value
 
@@ -134,7 +136,7 @@ def doLookup(sheet, column_info_dict, end_row):
             if src_key not in column_info_dict[table].keys():
                 db_key_cell.value = src_key
                 sheet.range(db_cols[1] + r).value = "(정보 없음)"
-                db_cells.color = alert_color
+                db_cells.color = warning_color
                 print(f"!!! 정보 없음 - {src_key}")
                 continue
 
@@ -146,10 +148,14 @@ def doLookup(sheet, column_info_dict, end_row):
                 for i in range(len(db_cols)):
                     target_info_key = data_mapping[db_cols[i]]
                     val = target_info[target_info_key]
+                    if val is None and i > 0 and target_info[data_mapping[db_cols[i-1]]]:    # decimal 타입인 경우
+                        val = target_info[data_mapping["N2"]]
                     target_cell = sheet.range(db_cols[i] + r)
                     src, tgt = sheet.range(src_cols[i] + r).value, val
                     target_cell.value = tgt
-                    if not isSame(src, tgt):
+                    if src is None and tgt != '':
+                        target_cell.color = warning_color
+                    elif not isSame(src, tgt):
                         target_cell.color = alert_color
                         
     return
