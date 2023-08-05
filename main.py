@@ -1,34 +1,45 @@
-
+import sys
 
 from util.fetchColumnInfo import fetchColumnInfo
-from util.getTargetCols import getTargetCols, getTargetTableAndCols
-from util.getQuery import getQuery
-from util.getEndRow import getEndRow
+from util.getTargetCols import getTargetTableAndCols
 from util.lookupInfoAndShowResult import lookupInfoAndShowResult
-from util.getFile import getSrcFile
+from util.getFileNameList import getFileNameList
+from util.getFileProperties import getFileProperties
 from pprint import pprint
 
 
-# read Excel
-target_wb, target_sheet = getSrcFile()
+def main():
+    # Check if at least one parameter was provided
+    param = None
+    if len(sys.argv) >= 2:
+        param = sys.argv[1]
 
-# get Query to parse
-# end_row, query = getQuery(target_wb, target_sheet)
+    # get target Files
+    files = getFileNameList() if param is None else [param]
 
-end_row = getEndRow(target_wb, target_sheet)
+    for file_name in files:
+        print(f"[START] {file_name} -------------")
+        # (wb, ws, endRow)
+        target_wb, target_ws, end_row = getFileProperties()
 
-if end_row is None:   
-    print("문서 양식을 확인해주세요")
-else:
-    # print(f"!!!!!! query: {query}")
-    ### SQL parsing
-    # target_cols = getTargetCols(query)
-    target_cols = getTargetTableAndCols(target_wb, target_sheet, end_row)
+        if end_row is None:   
+            print("문서 양식을 확인해주세요")
+        else:
+            target_cols = getTargetTableAndCols(target_wb, target_ws, end_row)
 
-    ### fetching column information from DB
-    column_info_dict = fetchColumnInfo(target_cols)
-    pprint(column_info_dict)
+            ### fetching column information from DB
+            column_info_dict = fetchColumnInfo(target_cols)
+            pprint(column_info_dict)
 
-    ### write result of comparing on new excel sheet ('비교')
-    lookupInfoAndShowResult(target_wb, target_sheet, end_row, column_info_dict)
+            ### write result of comparing on new excel sheet ('비교')
+            lookupInfoAndShowResult(target_wb, target_ws, end_row, column_info_dict)
 
+        target_wb.close()
+        print(f"[END] {file_name} -------------")
+
+
+
+
+
+if __name__ == "__main__":
+    main()

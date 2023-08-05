@@ -1,6 +1,6 @@
 import xlwings as xw
 
-def prepareSheetForComparison(wb, comparison_sheet_name):
+def prepareSheetForComparison(wb, ws, comparison_sheet_name):
     comparison_sheet = None
     # Check if the sheet 'comparison' already exists in the workbook
     for sht in wb.sheets:
@@ -10,7 +10,7 @@ def prepareSheetForComparison(wb, comparison_sheet_name):
 
     # If 'comparison' sheet doesn't exist, create a new one
     if comparison_sheet is None:
-        comparison_sheet = wb.sheets.add(comparison_sheet_name)
+        comparison_sheet = wb.sheets.add(comparison_sheet_name, after=ws)
     
     return comparison_sheet
 
@@ -163,13 +163,13 @@ def doLookup(sheet, column_info_dict, end_row):
     
 
 
-def lookupInfoAndShowResult(wb, sheet, query_row, column_info_dict):
+def lookupInfoAndShowResult(wb, ws, query_row, column_info_dict):
     comparison_sheet_name = "비교"
-    comparison_sheet = prepareSheetForComparison(wb, comparison_sheet_name)
+    comparison_sheet = prepareSheetForComparison(wb, ws, comparison_sheet_name)
     print(f"comparision sheet : {comparison_sheet}")
 
     end_row = query_row - 3
-    copySourceData(sheet, comparison_sheet, end_row)
+    copySourceData(ws, comparison_sheet, end_row)
 
     createFetchDataTable(comparison_sheet, column_info_dict, end_row)
 
