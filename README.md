@@ -65,7 +65,7 @@
 - `$ source venv/Scripts/activate` (이미 활성화되어 있는 경우 생략)
 - `$ python main.py [sample.xlsx]` (run)
   - 특정 파일만 검사하고 싶다면 해당 파일의 이름을 파라미터로 넣어주세요
-  - 생략하면 `excels` 폴더 내의 모든 파일을 검사합니다
+  - 파라미터를 생략하면 `excels` 폴더 내의 모든 파일을 검사합니다
 
 
 
