@@ -20,7 +20,7 @@ def main():
     for file_name in files:
         print(f"[START] {file_name} -------------")
         # (wb, ws, endRow)
-        target_wb, target_ws, end_row = getFileProperties()
+        target_wb, target_ws, end_row = getFileProperties(file_name)
 
         if end_row is None:   
             print("문서 양식을 확인해주세요")
@@ -34,7 +34,7 @@ def main():
             ### write result of comparing on new excel sheet ('비교')
             lookupInfoAndShowResult(target_wb, target_ws, end_row, column_info_dict)
 
-        target_wb.close()
+        # target_wb.close()
         print(f"[END] {file_name} -------------")
 
 
