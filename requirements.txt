@@ -3,6 +3,4 @@ jproperties==2.1.1
 PyMySQL==1.1.0
 pywin32==306
 six==1.16.0
-sql-metadata==2.8.0
-sqlparse==0.4.4
 xlwings==0.30.10

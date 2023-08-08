@@ -1,8 +1,8 @@
 import os
 
-folder_path = './excels'
 
-def getFileNameList():
+
+def getFileNameList(folder_path):
     try:
         files = os.listdir(folder_path)
         excel_files = [f"{folder_path}/{file}" for file in files if file.endswith('.xlsx') or file.endswith('.xls')]

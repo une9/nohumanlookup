@@ -75,11 +75,6 @@ def isSame(a, b):
 
 
 def doLookup(sheet, column_info_dict, end_row):
-    # src_eng_name_col, src_kor_name_col, src_col_type_col, src_col_size_col, src_not_null_col, src_pk_col = "B", "C", "E", "F", "G", "H"
-    # db_eng_name_col, db_kor_name_col, db_col_type_col, db_col_size_col, db_not_null_col, db_pk_col = "J", "K", "M", "N", "O", "P"
-
-    # print(f"******-----------")
-    # print(f"******-----------{column_info_dict}")
 
     src_cols = ["B", "C", "E", "F", "G", "H"]
     db_cols = ["J", "K", "M", "N", "O", "P"]
@@ -94,7 +89,6 @@ def doLookup(sheet, column_info_dict, end_row):
         "O" : "IS_NOT_NULLABLE",    # 필수여부
         "P" : "IS_PRIMARY_KEY",    # PK
     }
-    # TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, COLUMN_COMMENT, IS_NOT_NULLABLE, IS_PRIMARY_KEY
 
     table_row_color = (128, 128, 128)   # grey
     alert_color = (255, 0, 0)        # red
@@ -102,16 +96,13 @@ def doLookup(sheet, column_info_dict, end_row):
 
     table = None
     for row in range(5, end_row + 1):
-        # eng_name, kor_name, col_type, col_size, not_null, pk = 
         r = str(row)
         src_key_cell = sheet.range(src_cols[0] + r)
         db_key_cell = sheet.range(db_cols[0] + r)
         src_cells = sheet.range(f"{src_cols[0]}{r}:{src_cols[-1]}{r}")
         db_cells = sheet.range(f"{db_cols[0]}{r}:{db_cols[-1]}{r}")
 
-        # table_names = list(map(lambda x: x.upper(), column_info_dict.keys()))
         table_names = list(column_info_dict.keys())
-        # print(f"table names: {table_names}")
         
         src_key = src_key_cell.value
 
@@ -119,7 +110,6 @@ def doLookup(sheet, column_info_dict, end_row):
             continue
         elif src_key.upper() in table_names:       # 테이블명일 때
             src_cells.color = table_row_color
-            # db_cells.color = table_row_color
             src_cells.api.Copy()
             db_key_cell.api.PasteSpecial()
 
@@ -129,10 +119,6 @@ def doLookup(sheet, column_info_dict, end_row):
             # set table
             table = src_key
         else:                                                 # 컬럼명일 때
-            # print(f"-----------table: {table}")
-            # print(f"-----------{column_info_dict[table]}")
-            # print(f"-----------{column_info_dict[table].keys()}")
-            # print(f"-----------{src_key}")
             if src_key not in column_info_dict[table].keys():
                 db_key_cell.value = src_key
                 sheet.range(db_cols[1] + r).value = "(정보 없음)"
@@ -141,7 +127,7 @@ def doLookup(sheet, column_info_dict, end_row):
                 continue
 
             target_info = column_info_dict[table][src_key]
-            # print(f"target_info : {target_info}")
+
             if len(target_info) == 0:                   # 일치하는 정보가 없을 때
                 print(f"***No target Info : table - {table} / col - {src_key}")
             else:                                       # 일치하는 정보가 있을 때 -> 기존 문서 데이터와 비교
@@ -166,7 +152,6 @@ def doLookup(sheet, column_info_dict, end_row):
 def lookupInfoAndShowResult(wb, ws, query_row, column_info_dict):
     comparison_sheet_name = "비교"
     comparison_sheet = prepareSheetForComparison(wb, ws, comparison_sheet_name)
-    print(f"comparision sheet : {comparison_sheet}")
 
     end_row = query_row - 3
     copySourceData(ws, comparison_sheet, end_row)

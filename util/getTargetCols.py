@@ -1,25 +1,6 @@
-from sql_metadata import Parser
 from collections import defaultdict
 import xlwings as xw
 from pprint import pprint
-
-
-def getTargetCols(query):
-    columns = Parser(query).columns
-    # print("** tables: ", Parser(query).tables)
-    pprint(columns)
-
-    result = defaultdict(set)
-
-    try:
-        for column in columns:
-            table_name, col_name = column.split(".")
-            result[table_name].add(col_name)
-    except:
-        print(f"Exception: {column}")
-        
-
-    return result
 
 
 def getTargetTableAndCols(wb, ws, end_row):

@@ -8,6 +8,8 @@ from util.getFileProperties import getFileProperties
 from pprint import pprint
 
 
+folder_path = './excels'
+
 def main():
     # Check if at least one parameter was provided
     param = None
@@ -15,7 +17,7 @@ def main():
         param = sys.argv[1]
 
     # get target Files
-    files = getFileNameList() if param is None else [param]
+    files = getFileNameList(folder_path) if param is None else [f"{folder_path}/{param}"]
 
     for file_name in files:
         print(f"[START] {file_name} -------------")
